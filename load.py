@@ -1,6 +1,6 @@
 from mongoengine import connect
 import json
-from models import Author, Quote
+from models import AuthorItem, QuoteItem
 
 
 def load_authors(filename='authors.json'):
@@ -8,7 +8,7 @@ def load_authors(filename='authors.json'):
         authors_data = json.load(authors_file)
 
     for author_data in authors_data:
-        author = Author(**author_data)
+        author = AuthorItem(**author_data)
         author.save()
 
 
@@ -18,39 +18,38 @@ def load_quotes(filename='quotes.json'):
 
     for quote_data in quotes_data:
         author_fullname = quote_data['author']
-        author = Author.objects(fullname=author_fullname).first()
+        author = AuthorItem.objects(fullname=author_fullname).first()
 
         if author:
             quote_data['author'] = author
-            quote = Quote(**quote_data)
+            quote = QuoteItem(**quote_data)
             quote.save()
         else:
             print(f"Author not found for quote: {quote_data}")
 
 
 def search_quotes_by_author(author_name):
-    author = Author.objects(fullname=author_name).first()
+    author = AuthorItem.objects(fullname=author_name).first()
     if author:
-        quotes = Quote.objects(author=author)
+        quotes = QuoteItem.objects(author=author)
         return quotes
     else:
         return []
 
 
 def search_quotes_by_tag(tag):
-    quotes = Quote.objects(tags=tag)
+    quotes = QuoteItem.objects(tags=tag)
     return quotes
 
 
 def search_quotes_by_tags(tags):
-    quotes = Quote.objects(tags__in=tags)
+    quotes = QuoteItem.objects(tags__in=tags)
     return quotes
 
 
 if __name__ == '__main__':
     # Підключення до бази даних MongoDB Atlas
-    connect(db='home_08', host='mongodb+srv://oiseua:Kivusd4ST6eqoJDp@cluster0.no20xgq.mongodb.net/test?retryWrites=true&w=majority')
-
+    connect(db='home_09', host='mongodb+srv://oiseua:Kivusd4ST6eqoJDp@cluster0.no20xgq.mongodb.net/test?retryWrites=true&w=majority')
 
 
     # Завантаження даних у базу даних
@@ -95,4 +94,3 @@ while True:
     print("Результати пошуку:")
     for quote in quotes:
         print(f"{quote.author.fullname}: {quote.quote.encode('utf-8')}")
-
