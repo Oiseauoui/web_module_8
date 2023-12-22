@@ -12,3 +12,4 @@ class QuoteItem(Document):
     tags = ListField(StringField())
     author = ReferenceField(AuthorItem)  # Змінено цю лінію коду
     quote = StringField(required=True)
+
